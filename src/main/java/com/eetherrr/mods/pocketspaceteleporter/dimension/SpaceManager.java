@@ -1,8 +1,7 @@
 package com.eetherrr.mods.pocketspaceteleporter.dimension;
 
 import com.eetherrr.mods.pocketspaceteleporter.PocketSpaceTeleporter;
-import com.eetherrr.mods.pocketspaceteleporter.data.PersistentDataManager;
-import com.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
+import com.eetherrr.mods.pocketspaceteleporter.data.OriginDataManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -24,7 +23,9 @@ import java.util.UUID;
 public class SpaceManager implements INBTSerializable<CompoundTag> {
 	public static final SpaceManager INSTANCE = new SpaceManager();
 	public static final ResourceKey<Level> POCKET_SPACE = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(PocketSpaceTeleporter.MODID, "pocket_space"));
-	private final Object2ObjectOpenHashMap<UUID, Vec3> playerSpaceMap = new Object2ObjectOpenHashMap<>();
+	protected final Object2ObjectOpenHashMap<UUID, Vec3> playerSpaceMap = new Object2ObjectOpenHashMap<>();
+
+	//todo:需要重新考虑结构id和玩家对应关系，可能需要用到方块实体
 
 	@Override
 	public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
@@ -62,37 +63,15 @@ public class SpaceManager implements INBTSerializable<CompoundTag> {
 	}
 
 	public void enterPocketSpace(ServerPlayer serverPlayer, ServerLevel pocketLevel) {
-		if(StructurePlacer.INSTANCE.findOrPlaceStructure(serverPlayer)) {
-			PersistentDataManager.INSTANCE.savePlayerOriginPos(serverPlayer);
-			Vec3 pos = findOrCreateSpawnPos(serverPlayer.getUUID());
-			serverPlayer.changeDimension(new DimensionTransition(pocketLevel, pos, Vec3.ZERO, serverPlayer.getYRot(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
-		}
+		OriginDataManager.INSTANCE.savePlayerOriginPos(serverPlayer);
+		Vec3 pos = StructurePlacer.INSTANCE.findOrPlaceStructure(serverPlayer);
+		serverPlayer.changeDimension(new DimensionTransition(pocketLevel, pos, Vec3.ZERO, serverPlayer.getYRot(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
 	}
 
 	public void returnFromPocket(ServerPlayer serverPlayer) {
-		CompoundTag originPos = PersistentDataManager.INSTANCE.getPlayerOriginPos(serverPlayer);
-		if(originPos!=null) {
-			String dimNameSpace = originPos.getCompound("dim").getString("namespace");
-			String dimPath = originPos.getCompound("dim").getString("path");
-			ResourceKey<Level> originDim = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(dimNameSpace, dimPath));
-			ServerLevel returnLevel = serverPlayer.getServer().getLevel(originDim);
-			if(returnLevel!=null) {
-				Vec3 returnPos = new Vec3(originPos.getDouble("x"), originPos.getDouble("y"), originPos.getDouble("z"));
-				serverPlayer.changeDimension(new DimensionTransition(returnLevel, returnPos, Vec3.ZERO, serverPlayer.getYRot(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
-				PersistentDataManager.INSTANCE.clearPlayerOriginPos(serverPlayer);
-			}
-		}
-	}
-
-	private Vec3 findOrCreateSpawnPos(UUID uuid) {
-		if(playerSpaceMap.containsKey(uuid)) {
-			return playerSpaceMap.get(uuid);
-		}else {
-			//todo:需先完成结构放置算法，再获取结构中心位置作为spawnPos
-			Vec3 pos = new Vec3((playerSpaceMap.size()%10)*StructurePlacer.SPACING/2.0, 1, (playerSpaceMap.size()/10)*StructurePlacer.SPACING/2.0);
-			playerSpaceMap.put(uuid, pos);
-			SpaceDataStorage.INSTANCE.setDirty();
-			return pos;
-		}
+		ServerLevel returnLevel = serverPlayer.getServer().getLevel(OriginDataManager.INSTANCE.getPlayerOriginDim(serverPlayer));
+		Vec3 returnPos = OriginDataManager.INSTANCE.getPlayerOriginPos(serverPlayer);
+		serverPlayer.changeDimension(new DimensionTransition(returnLevel, returnPos, Vec3.ZERO, serverPlayer.getYRot(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
+		OriginDataManager.INSTANCE.clearPlayerOriginTag(serverPlayer);
 	}
 }

@@ -1,6 +1,6 @@
-package com.eetherrr.mods.pocketspaceteleporter.Item;
+package com.eetherrr.mods.pocketspaceteleporter;
 
-import com.eetherrr.mods.pocketspaceteleporter.PocketSpaceTeleporter;
+import com.eetherrr.mods.pocketspaceteleporter.Item.TeleporterItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredItem;

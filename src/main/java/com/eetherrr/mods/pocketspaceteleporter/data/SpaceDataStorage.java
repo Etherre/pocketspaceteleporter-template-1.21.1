@@ -27,7 +27,7 @@ public class SpaceDataStorage extends SavedData {
 	public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
 		CompoundTag compoundTag = new CompoundTag();
 		compoundTag.put("SpaceManager", SpaceManager.INSTANCE.serializeNBT(provider));
-		tag.put("pocket_space_teleporter_data", compoundTag);
+		tag.put("pst_data", compoundTag);
 		return tag;
 	}
 }

@@ -1,6 +1,5 @@
 package com.eetherrr.mods.pocketspaceteleporter;
 
-import com.eetherrr.mods.pocketspaceteleporter.Item.ModItems;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
