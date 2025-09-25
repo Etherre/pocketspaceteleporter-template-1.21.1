@@ -1,9 +1,18 @@
+## Assets License (All Rights Reserved)
+
+All Rights Reserved
+
+Copyright (c) Eetherrr
+
+This license applies to the assets part
+
+## Code License (MIT)
+
 MIT License
 
-Copyright (c) 2025 Eetherrr, for the code part
+Copyright (c) Eetherrr, for the code part
 
 This license applies to the template files as supplied by github.com/NeoForged/MDK
-
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
