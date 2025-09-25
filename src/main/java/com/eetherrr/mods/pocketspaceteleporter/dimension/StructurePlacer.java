@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class StructurePlacer {
 	public static final StructurePlacer INSTANCE = new StructurePlacer();
-	public static final int SPACING = 256;
+	public static final int SPACING = 1024;
 	private final ResourceLocation SPACE_PLATFORM = ResourceLocation.fromNamespaceAndPath(PocketSpaceTeleporter.MODID, "space_platform");
 
 	public Vec3 findOrPlaceStructure(ServerPlayer serverPlayer) {
