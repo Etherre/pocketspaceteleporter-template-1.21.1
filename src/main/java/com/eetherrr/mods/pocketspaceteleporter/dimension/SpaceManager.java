@@ -25,8 +25,6 @@ public class SpaceManager implements INBTSerializable<CompoundTag> {
 	public static final ResourceKey<Level> POCKET_SPACE = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(PocketSpaceTeleporter.MODID, "pocket_space"));
 	protected final Object2ObjectOpenHashMap<UUID, Vec3> playerSpaceMap = new Object2ObjectOpenHashMap<>();
 
-	//todo:需要重新考虑结构id和玩家对应关系，可能需要用到方块实体
-
 	@Override
 	public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
 		CompoundTag compoundTag = new CompoundTag();
