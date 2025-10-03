@@ -21,8 +21,7 @@ public class StructurePlacer {
 		if(SpaceManager.INSTANCE.playerSpaceMap.containsKey(serverPlayer.getUUID())) {
 			return SpaceManager.INSTANCE.playerSpaceMap.get(serverPlayer.getUUID());
 		}else {
-			Vec3 playerSpawnPos = placeStructureForPlayer(serverPlayer);
-			return playerSpawnPos;
+			return placeStructureForPlayer(serverPlayer);
 		}
 	}
 
@@ -45,7 +44,7 @@ public class StructurePlacer {
 				BlockPos candidate = center.offset(dx, 0, dz);
 				if(isPositionFree(pocketLevel, candidate)) {
 					placeStructureAt(pocketLevel, candidate, candidate);
-					Vec3 pos = new Vec3(candidate.getX()+5, candidate.getY()+1, candidate.getZ()+5);
+					Vec3 pos = new Vec3(candidate.getX()+3.5, candidate.getY()+1, candidate.getZ()+3.5);
 					SpaceManager.INSTANCE.playerSpaceMap.put(serverPlayer.getUUID(), pos);
 					SpaceDataStorage.INSTANCE.setDirty();
 					return pos;
