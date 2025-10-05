@@ -4,8 +4,10 @@ import com.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
+@EventBusSubscriber
 public class LevelLoadEvent {
 	@SubscribeEvent
 	public static void onLevelLoad(LevelEvent.Load event) {

@@ -17,17 +17,17 @@ public class StructurePlacer {
 	public static final int SPACING = 1024;
 	private final ResourceLocation SPACE_PLATFORM = ResourceLocation.fromNamespaceAndPath(PocketSpaceTeleporter.MODID, "space_platform");
 
-	public Vec3 findOrPlaceStructure(ServerPlayer serverPlayer) {
-		if(SpaceManager.INSTANCE.playerSpaceMap.containsKey(serverPlayer.getUUID())) {
-			return SpaceManager.INSTANCE.playerSpaceMap.get(serverPlayer.getUUID());
+	public Vec3 findOrPlaceStructure(ServerPlayer serverPlayer, ServerLevel serverLevel) {
+		Vec3 pos = SpaceDataStorage.INSTANCE.getPlayerPosition(serverPlayer.getUUID());
+		if(pos!=null) {
+			return pos;
 		}else {
-			return placeStructureForPlayer(serverPlayer);
+			return placeStructureForPlayer(serverPlayer, serverLevel);
 		}
 	}
 
-	private Vec3 placeStructureForPlayer(ServerPlayer serverPlayer) {
-		ServerLevel pocketLevel = serverPlayer.getServer().getLevel(SpaceManager.POCKET_SPACE);
-		if(pocketLevel==null) {
+	private Vec3 placeStructureForPlayer(ServerPlayer serverPlayer, ServerLevel serverLevel) {
+		if(serverLevel==null) {
 			return null;
 		}
 
@@ -42,11 +42,10 @@ public class StructurePlacer {
 				int dx = dir[0]*step*SPACING;
 				int dz = dir[1]*step*SPACING;
 				BlockPos candidate = center.offset(dx, 0, dz);
-				if(isPositionFree(pocketLevel, candidate)) {
-					placeStructureAt(pocketLevel, candidate, candidate);
+				if(isPositionFree(serverLevel, candidate)) {
+					placeStructureAt(serverLevel, candidate, candidate);
 					Vec3 pos = new Vec3(candidate.getX()+3.5, candidate.getY()+1, candidate.getZ()+3.5);
-					SpaceManager.INSTANCE.playerSpaceMap.put(serverPlayer.getUUID(), pos);
-					SpaceDataStorage.INSTANCE.setDirty();
+					SpaceDataStorage.INSTANCE.setPlayerPosition(serverPlayer.getUUID(), pos);
 					return pos;
 				}
 			}

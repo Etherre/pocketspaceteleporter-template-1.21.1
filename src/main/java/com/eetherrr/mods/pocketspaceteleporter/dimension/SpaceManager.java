@@ -2,7 +2,7 @@ package com.eetherrr.mods.pocketspaceteleporter.dimension;
 
 import com.eetherrr.mods.pocketspaceteleporter.PocketSpaceTeleporter;
 import com.eetherrr.mods.pocketspaceteleporter.data.OriginDataManager;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.UUID;
@@ -23,13 +24,12 @@ import java.util.UUID;
 public class SpaceManager implements INBTSerializable<CompoundTag> {
 	public static final SpaceManager INSTANCE = new SpaceManager();
 	public static final ResourceKey<Level> POCKET_SPACE = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(PocketSpaceTeleporter.MODID, "pocket_space"));
-	protected final Object2ObjectOpenHashMap<UUID, Vec3> playerSpaceMap = new Object2ObjectOpenHashMap<>();
 
 	@Override
-	public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
+	public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
 		CompoundTag compoundTag = new CompoundTag();
 		ListTag listTag = new ListTag();
-		for(var entry : playerSpaceMap.entrySet()) {
+		for(var entry : SpaceDataStorage.INSTANCE.playerSpaceMap.entrySet()) {
 			CompoundTag tagEntry = new CompoundTag();
 			CompoundTag posTag = new CompoundTag();
 			UUID key = entry.getKey();
@@ -46,8 +46,8 @@ public class SpaceManager implements INBTSerializable<CompoundTag> {
 	}
 
 	@Override
-	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-		playerSpaceMap.clear();
+	public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
+		//this.playerSpaceMap.clear();
 		if(nbt.contains("position_mapping", Tag.TAG_LIST)) {
 			ListTag listTag = nbt.getList("position_mapping", Tag.TAG_COMPOUND);
 			for(int i = 0; i<listTag.size(); i++) {
@@ -55,15 +55,15 @@ public class SpaceManager implements INBTSerializable<CompoundTag> {
 				UUID uuid = entry.getUUID("uuid");
 				CompoundTag posTag = entry.getCompound("pos");
 				Vec3 pos = new Vec3(posTag.getDouble("x"), posTag.getDouble("y"), posTag.getDouble("z"));
-				playerSpaceMap.put(uuid, pos);
+				SpaceDataStorage.INSTANCE.playerSpaceMap.put(uuid, pos);
 			}
 		}
 	}
 
-	public void enterPocketSpace(ServerPlayer serverPlayer, ServerLevel pocketLevel) {
+	public void enterPocketSpace(ServerPlayer serverPlayer, ServerLevel serverLevel) {
 		OriginDataManager.INSTANCE.savePlayerOriginPos(serverPlayer);
-		Vec3 pos = StructurePlacer.INSTANCE.findOrPlaceStructure(serverPlayer);
-		serverPlayer.changeDimension(new DimensionTransition(pocketLevel, pos, Vec3.ZERO, serverPlayer.getYRot(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
+		Vec3 pos = StructurePlacer.INSTANCE.findOrPlaceStructure(serverPlayer, serverLevel);
+		serverPlayer.changeDimension(new DimensionTransition(serverLevel, pos, Vec3.ZERO, serverPlayer.getYRot(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
 	}
 
 	public void returnFromPocket(ServerPlayer serverPlayer) {
