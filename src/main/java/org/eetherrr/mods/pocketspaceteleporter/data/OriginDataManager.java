@@ -1,4 +1,4 @@
-package com.eetherrr.mods.pocketspaceteleporter.data;
+package org.eetherrr.mods.pocketspaceteleporter.data;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -10,7 +10,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class OriginDataManager {
 	public static final OriginDataManager INSTANCE = new OriginDataManager();
-
+	
 	public void savePlayerOriginPos(ServerPlayer serverPlayer) {
 		CompoundTag pData = serverPlayer.getPersistentData();
 		if(!pData.contains("pst_origin_data", Tag.TAG_COMPOUND)) {
@@ -25,7 +25,26 @@ public class OriginDataManager {
 			pData.put("pst_origin_data", originTag);
 		}
 	}
-
+	
+	public void clearPlayerOriginTag(ServerPlayer serverPlayer) {
+		CompoundTag pData = serverPlayer.getPersistentData();
+		if(pData.contains("pst_origin_data", Tag.TAG_COMPOUND)) {
+			pData.remove("pst_origin_data");
+		}
+	}
+	
+	public ResourceKey<Level> getPlayerOriginDim(ServerPlayer serverPlayer) {
+		CompoundTag originTag = getPlayerOriginTag(serverPlayer);
+		if(originTag.contains("dim", Tag.TAG_COMPOUND)) {
+			CompoundTag dimTag = originTag.getCompound("dim");
+			return ResourceKey.create(Registries.DIMENSION,
+			                          net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(dimTag.getString("namespace"),
+			                                                                                        dimTag.getString("path")));
+		}else {
+			return null;
+		}
+	}
+	
 	public CompoundTag getPlayerOriginTag(ServerPlayer serverPlayer) {
 		CompoundTag pData = serverPlayer.getPersistentData();
 		if(pData.contains("pst_origin_data", Tag.TAG_COMPOUND)) {
@@ -34,26 +53,12 @@ public class OriginDataManager {
 			return null;
 		}
 	}
-
-	public void clearPlayerOriginTag(ServerPlayer serverPlayer) {
-		CompoundTag pData = serverPlayer.getPersistentData();
-		if(pData.contains("pst_origin_data", Tag.TAG_COMPOUND)) {
-			pData.remove("pst_origin_data");
-		}
-	}
-
-	public ResourceKey<Level> getPlayerOriginDim(ServerPlayer serverPlayer) {
-		CompoundTag originTag = getPlayerOriginTag(serverPlayer);
-		if(originTag.contains("dim", Tag.TAG_COMPOUND)) {
-			CompoundTag dimTag = originTag.getCompound("dim");
-			return ResourceKey.create(Registries.DIMENSION, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(dimTag.getString("namespace"), dimTag.getString("path")));
-		}else {
-			return null;
-		}
-	}
-
+	
 	public Vec3 getPlayerOriginPos(ServerPlayer serverPlayer) {
 		CompoundTag originTag = getPlayerOriginTag(serverPlayer);
+		if(originTag==null) {
+			return null;
+		}
 		return new Vec3(originTag.getDouble("x"), originTag.getDouble("y"), originTag.getDouble("z"));
 	}
 }

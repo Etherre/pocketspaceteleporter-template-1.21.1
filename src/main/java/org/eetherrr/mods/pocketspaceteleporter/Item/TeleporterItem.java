@@ -1,6 +1,5 @@
-package com.eetherrr.mods.pocketspaceteleporter.Item;
+package org.eetherrr.mods.pocketspaceteleporter.Item;
 
-import com.eetherrr.mods.pocketspaceteleporter.dimension.SpaceManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -9,12 +8,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.eetherrr.mods.pocketspaceteleporter.dimension.SpaceManager;
 
 public class TeleporterItem extends Item {
 	public TeleporterItem(Properties properties) {
 		super(properties);
 	}
-
+	
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack teleporter = player.getItemInHand(usedHand);

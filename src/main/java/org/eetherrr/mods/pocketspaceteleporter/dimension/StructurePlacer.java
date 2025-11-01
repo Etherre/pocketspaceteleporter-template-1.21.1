@@ -1,7 +1,5 @@
-package com.eetherrr.mods.pocketspaceteleporter.dimension;
+package org.eetherrr.mods.pocketspaceteleporter.dimension;
 
-import com.eetherrr.mods.pocketspaceteleporter.PocketSpaceTeleporter;
-import com.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -11,12 +9,14 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
+import org.eetherrr.mods.pocketspaceteleporter.PocketSpaceTeleporter;
+import org.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
 
 public class StructurePlacer {
 	public static final StructurePlacer INSTANCE = new StructurePlacer();
 	public static final int SPACING = 1024;
 	private final ResourceLocation SPACE_PLATFORM = ResourceLocation.fromNamespaceAndPath(PocketSpaceTeleporter.MODID, "space_platform");
-
+	
 	public Vec3 findOrPlaceStructure(ServerPlayer serverPlayer, ServerLevel serverLevel) {
 		Vec3 pos = SpaceDataStorage.INSTANCE.getPlayerPosition(serverPlayer.getUUID());
 		if(pos!=null) {
@@ -25,18 +25,18 @@ public class StructurePlacer {
 			return placeStructureForPlayer(serverPlayer, serverLevel);
 		}
 	}
-
+	
 	private Vec3 placeStructureForPlayer(ServerPlayer serverPlayer, ServerLevel serverLevel) {
 		if(serverLevel==null) {
 			return null;
 		}
-
+		
 		int baseY = 0;
 		BlockPos center = new BlockPos(0, baseY, 0);
-
+		
 		int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 		int step = 0;
-
+		
 		while(true) {
 			for(int[] dir : directions) {
 				int dx = dir[0]*step*SPACING;
@@ -52,16 +52,16 @@ public class StructurePlacer {
 			step++;
 		}
 	}
-
+	
 	private boolean isPositionFree(ServerLevel level, BlockPos pos) {
 		return level.isEmptyBlock(pos);
 	}
-
+	
 	private void placeStructureAt(ServerLevel level, BlockPos offset, BlockPos pos) {
 		StructureTemplate structureTemplate = level.getStructureManager().getOrCreate(SPACE_PLATFORM);
 		StructurePlaceSettings placementSettings = new StructurePlaceSettings().setMirror(Mirror.NONE)
-				                                           .setRotation(Rotation.NONE)
-				                                           .setIgnoreEntities(true);
+		                                                                       .setRotation(Rotation.NONE)
+		                                                                       .setIgnoreEntities(true);
 		structureTemplate.placeInWorld(level, offset, pos, placementSettings, level.getRandom(), 2);
 	}
 }

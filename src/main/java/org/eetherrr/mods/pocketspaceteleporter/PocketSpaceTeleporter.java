@@ -1,4 +1,4 @@
-package com.eetherrr.mods.pocketspaceteleporter;
+package org.eetherrr.mods.pocketspaceteleporter;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -12,12 +12,12 @@ import org.slf4j.Logger;
 public class PocketSpaceTeleporter {
 	public static final String MODID = "pocket_space_teleporter";
 	public static final Logger LOGGER = LogUtils.getLogger();
-
+	
 	public PocketSpaceTeleporter(IEventBus modEventBus, ModContainer modContainer) {
 		ModItems.ITEMS.register(modEventBus);
 		modEventBus.addListener(this::addCreative);
 	}
-
+	
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
 		if(event.getTabKey()==CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(ModItems.SPACE_TELEPORTER);

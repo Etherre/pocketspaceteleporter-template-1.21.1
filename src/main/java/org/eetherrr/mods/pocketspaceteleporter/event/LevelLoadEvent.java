@@ -1,11 +1,11 @@
-package com.eetherrr.mods.pocketspaceteleporter.event;
+package org.eetherrr.mods.pocketspaceteleporter.event;
 
-import com.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import org.eetherrr.mods.pocketspaceteleporter.data.SpaceDataStorage;
 
 @EventBusSubscriber
 public class LevelLoadEvent {
